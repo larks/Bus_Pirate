@@ -548,22 +548,6 @@ void user_serial_initialise(void) {
   }
 
   /*
-   * U1STA - UART1 STATUS AND CONTROL REGISTER
-   *
-   * MSB
-   * 000-01xx 000xxx0x
-   * ||| ||  |||   |
-   * ||| ||  |||   +-- OERR:    Overflow flag cleared.
-   * ||| ||  ||+------ ADDEN:   Address detect mode disabled.
-   * ||| ||  ++------- URXISEL: Interrupt on any incoming character.
-   * ||| |+----------- UTXEN:   Enable transmission.
-   * ||| +------------ UTXBRK:  Sync break transmission disabled.
-   * +|+-------------- UTXISEL: Interrupt on each outgoing character.
-   *  +--------------- UTXINV:  Idle state high (IrDA is disabled).
-   */
-  U1STA = 0x0400;
-
-  /*
    * U1MODE - UART1 MODE REGISTER
    *
    * MSB
@@ -583,6 +567,23 @@ void user_serial_initialise(void) {
    * +----------------- UARTEN: UART1 enabled.
    */
   U1MODE = 0x8008;
+
+  /*
+   * U1STA - UART1 STATUS AND CONTROL REGISTER
+   *
+   * MSB
+   * 000-01xx 000xxx0x
+   * ||| ||  |||   |
+   * ||| ||  |||   +-- OERR:    Overflow flag cleared.
+   * ||| ||  ||+------ ADDEN:   Address detect mode disabled.
+   * ||| ||  ++------- URXISEL: Interrupt on any incoming character.
+   * ||| |+----------- UTXEN:   Enable transmission.
+   * ||| +------------ UTXBRK:  Sync break transmission disabled.
+   * +|+-------------- UTXISEL: Interrupt on each outgoing character.
+   *  +--------------- UTXINV:  Idle state high (IrDA is disabled).
+   */
+  U1STA = 0x0400;
+
 
   IFS0bits.U1RXIF = NO;
 }
