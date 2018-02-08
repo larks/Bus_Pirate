@@ -741,13 +741,13 @@ bpv4reset:
                     }
                     break;
                 case 'd':
-                    MSG_ADC_VOLTAGE_PROBE_HEADER;
-                    bp_adc_probe();
-                    MSG_VOLTAGE_UNIT;
-                    bpBR;
+                    //MSG_ADC_VOLTAGE_PROBE_HEADER;
+                    //bp_adc_probe();
+                    //MSG_VOLTAGE_UNIT;
+                    //bpBR;
                     break;
                 case 'D': //bpWline("-DVM mode");	//dumb voltmeter mode
-                    bp_adc_continuous_probe();
+                    //bp_adc_continuous_probe();
                     break;
                 case '&': //bpWline("-delay 1ms");
                     repeat = getrepeat();
@@ -1659,7 +1659,8 @@ void print_pins_information(void) {
     print_pin_direction(CLK);
     print_pin_direction(MOSI);
 #else    
-    print_pin_direction(AUX);
+    print_pin_direction(AUX0);
+ //   print_pin_direction(AUX1);
     print_pin_direction(CLK);
     print_pin_direction(MOSI);
     print_pin_direction(CS);
@@ -1695,7 +1696,7 @@ void print_pins_information(void) {
 #if defined(BP_VERSION2_SUPPORT) && (BP_VERSION2_SUPPORT == 1)
     bp_write_voltage(bp_read_adc(BP_ADC_3V3));
 #else
-    bp_write_voltage(bp_read_adc(BP_ADC_PROBE));
+//    bp_write_voltage(bp_read_adc(BP_ADC_PROBE));
 #endif /* BP_VERSION2_SUPPORT && (BP_VERSION2_SUPPORT == 1) */
 #endif /* BUSPIRATEV4 */
     MSG_VOLTAGE_UNIT;
@@ -1720,7 +1721,8 @@ void print_pins_information(void) {
     print_pin_state(CLK);
     print_pin_state(MOSI);
 #else
-    print_pin_state(AUX);
+    print_pin_state(AUX0);
+//    print_pin_state(AUX1);
     print_pin_state(CLK);
     print_pin_state(MOSI);
     print_pin_state(CS);

@@ -431,7 +431,7 @@ static bool sump_handle_command_byte(uint8_t input_byte);
 void enter_sump_mode(void) {
 
   /* Set probing channels to INPUT mode. */
-  IODIR |= AUX + MOSI + CLK + MISO + CS;
+  IODIR |= AUX0 + AUX1 + MOSI + CLK + MISO + CS;
 
   /* Reset the analyzer state. */
   sump_reset();

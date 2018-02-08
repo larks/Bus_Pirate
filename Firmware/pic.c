@@ -324,10 +324,10 @@ void binpic(void)
 										break;
 							case 0x10:	if(cmd&0x08)
 										{	if(cmd&0x04)
-											{	bitbang_set_pins_high(AUX ,5);
+											{	bitbang_set_pins_high(AUX0 ,5);
 											}
 											else
-											{	bitbang_set_pins_low(AUX ,5);
+											{	bitbang_set_pins_low(AUX0 ,5);
 											}
 											if(cmd&0x02)
 											{	bitbang_set_pins_high(MISO ,5);

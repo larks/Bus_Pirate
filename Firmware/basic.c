@@ -555,7 +555,7 @@ int handle_special_token(const uint8_t token) {
     int adc_measurement;
 
     ADCON();
-    adc_measurement = bp_read_adc(BP_ADC_PROBE);
+    adc_measurement = 0;//bp_read_adc(BP_ADC_PROBE);
     ADCOFF();
 
     return adc_measurement;

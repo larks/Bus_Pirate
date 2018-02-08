@@ -41,7 +41,8 @@
 #define BP_TERM_RX_RP	5
 
 //this is a different type of pin identifier used by the bitbang library
-#define AUX		0b10000000000 //RB10 on v1, 2, 2go, 3 (not v0)
+//#define AUX1        0b1000000000000 //RB12 Modified
+#define AUX0		0b10000000000 //RB10 on v1, 2, 2go, 3 (not v0)
 #define MOSI 	0b1000000000  //RB9
 #define CLK 	0b100000000    //RB8
 #define MISO 	0b10000000 //RB7
@@ -65,6 +66,7 @@
 #define BP_VREGEN		PORTAbits.RA0 //single vreg enable pin on v2a
 #define BP_PULLUP		PORTBbits.RB11 //Pull-up pin on V2a
 #define BP_PGD			PORTBbits.RB0 //PGD pin on programming header
+#define BP_AUX1 			PORTBbits.RB12 // Change pin4 (ADC) to AUX1 on RB12
 
 //these macros set the direction registers for each IO pin
 #define BP_MOSI_DIR 	TRISBbits.TRISB9
@@ -76,6 +78,7 @@
 #define BP_VREGEN_DIR	TRISAbits.TRISA0
 #define BP_PULLUP_DIR	TRISBbits.TRISB11
 #define BP_PGD_DIR		TRISBbits.TRISB0
+#define BP_AUX1_DIR 		TRISBbits.TRISB12
 
 //Open drain/high impedance pin setup
 #define BP_MOSI_ODC 	ODCBbits.ODB9
@@ -83,13 +86,14 @@
 #define BP_MISO_ODC 	ODCBbits.ODB7
 #define BP_CS_ODC 		ODCBbits.ODB6
 #define BP_AUX0_ODC 		ODCBbits.ODB10
+#define BP_AUX1_ODC 		ODCBbits.ODB12
 
 //Change notice assignment
 #define BP_MOSI_CN		CNEN2bits.CN21IE
 #define BP_CLK_CN		CNEN2bits.CN22IE
 
 //ADC assignment
-#define BP_ADC_PROBE 12
+//#define BP_ADC_PROBE 12
 #define BP_ADC_3V3 10
 #define BP_ADC_5V0 9
 #define BP_ADC_VPU 11
@@ -108,12 +112,12 @@
 #define ADCOFF() AD1CON1bits.ADON = 0 // turn ADC OFF 
 
 //ADC pin configuration
-#define BP_ADC_PROBE_CFG AD1PCFGbits.PCFG12 //B12/AN12/ADC1/EXT 
+//#define BP_ADC_PROBE_CFG AD1PCFGbits.PCFG12 //B12/AN12/ADC1/EXT 
 #define BP_ADC_3V3_CFG AD1PCFGbits.PCFG10 //B14/AN10/ADC3/33V 
 #define BP_ADC_5V0_CFG AD1PCFGbits.PCFG9 //B15/AN9/ADC4/50V
 #define BP_ADC_VPU_CFG AD1PCFGbits.PCFG11 //B13/AN11/ADC2/Vextpullup
 
-#define BP_ADC_PINSETUP() BP_ADC_PROBE_CFG=0;BP_ADC_3V3_CFG=0;BP_ADC_5V0_CFG=0;BP_ADC_VPU_CFG=0
+#define BP_ADC_PINSETUP() BP_ADC_3V3_CFG=0;BP_ADC_5V0_CFG=0;BP_ADC_VPU_CFG=0 //BP_ADC_PROBE_CFG=0;
 
 //flow control connections for FTDI chip
 //used in uart brige
@@ -129,10 +133,13 @@
 #define BP_MOSI_RPOUT RPOR4bits.RP9R
 
 //define the PPS input/output for the AUX pin
-#define BP_AUX_RPIN 10	
-#define BP_AUX_RPOUT RPOR5bits.RP10R
+#define BP_AUX0_RPIN 10	
+#define BP_AUX0_RPOUT RPOR5bits.RP10R
 #define BP_CS_RPIN 6
 #define BP_CS_RPOUT RPOR5bits.RP6R
+
+#define BP_AUX1_RPIN 12	
+#define BP_AUX1_RPOUT RPOR6bits.RP12R
 
 //define the PPS input/output for CLK pin
 #define BP_CLK_RPIN 8

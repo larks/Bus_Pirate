@@ -940,6 +940,10 @@ void binary_io_enter_i2c_mode(void) {
 
   // set CS pin direction to output on setup
   BP_CS_DIR = OUTPUT;
+  // Set pulse direction on setup
+  BP_AUX1_DIR = OUTPUT;
+  TRISAbits.TRISA1 = 0; // sets the Mode LED pin RA1 as output
+  //LATAbits.LATA1 = 0;   // turns LED off
 
   mode_configuration.high_impedance = ON;
   mode_configuration.lsbEN = OFF;
@@ -1057,8 +1061,11 @@ void binary_io_enter_i2c_mode(void) {
         // 0x01 - AUX/CS high
         // 0x02 - AUX/CS HiZ
         // 0x03 - AUX read
-        // 0x10 - use AUX
+        // 0x10 - use AUX0 (1v5_en)
         // 0x20 - use CS
+        // 0x41 - Pulse selected AUX (FUSEPPULSE)
+        // 0x80 - FUSEPOWER OFF
+        // 0x81 - FUSEPOWER ON
         fr = 1;
         switch (inByte) {
 
@@ -1086,11 +1093,37 @@ void binary_io_enter_i2c_mode(void) {
           mode_configuration.alternate_aux = 1;
           break;
 
+        //case 0x40:
+         // mode_configuration.alternate_aux = 2;
+          //break;
+          
+        case 0x41:
+          BP_AUX1_DIR = OUTPUT;
+          BP_AUX1 = HIGH;
+          //BP_AUX1_DIR = INPUT; // High Z, need 10k pullup to VPU XXX: Nope, need level shifter because of pulldown on FEC
+          bp_delay_us(200);
+          BP_AUX1_DIR = INPUT; // Pulled down on FEC
+          //BP_AUX1 = LOW;
+          bp_delay_us(200);
+          fr = 0;
+          break;
+        
+        case 0x80:
+          BP_VREG_OFF();
+          bp_delay_us(500);
+          fr = 0;
+          break;
+          
+        case 0x81:
+          BP_VREG_ON();
+          bp_delay_us(500);
+          fr = 0;
+          break;                
+
         default:
           fw = 0;
           break;
         }
-
         user_serial_transmit_character(fr); // result
         break;
 
@@ -1123,7 +1156,7 @@ void binary_io_enter_i2c_mode(void) {
       REPORT_IO_SUCCESS();
       break;
 
-    case 0b0100: // configure peripherals w=power, x=pullups, y=AUX, z=CS
+    case 0b0100: // configure peripherals w=power, x=pullups, y=AUX0, z=CS
       bp_binary_io_peripherals_set(inByte);
       REPORT_IO_SUCCESS();
       break;

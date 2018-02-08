@@ -226,13 +226,13 @@ uint16_t bp_read_adc(const uint16_t channel);
 /**
  * @brief Takes one single ADC measurement and prints it to the serial port.
  */
-void bp_adc_probe(void);
+//void bp_adc_probe(void);
 
 /**
  * @brief Takes ADC measurements and prints them to the serial port until a byte
  * is sent to the serial port.
  */
-void bp_adc_continuous_probe(void);
+//void bp_adc_continuous_probe(void);
 
 /**
  * @brief Prints the given value to the user terminal according to the format

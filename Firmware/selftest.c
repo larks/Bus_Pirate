@@ -107,6 +107,16 @@ uint8_t perform_selftest(bool show_progress, bool jumper_test) {
   check_result(BP_AUX0, HIGH);
   BP_AUX0 = LOW;
   BP_AUX0_DIR = INPUT;
+  
+  BP_AUX1 = HIGH;
+  BP_AUX1_DIR = OUTPUT;
+  BPMSG1165;
+  check_result(BP_AUX1, HIGH);
+  BP_AUX1 = LOW;
+  BP_AUX1_DIR = INPUT;
+  BPMSG1165;
+  check_result(BP_AUX1, LOW);
+
 
   /* Check whether the LED line goes HIGH when requested. */
 
@@ -251,7 +261,7 @@ uint8_t perform_selftest(bool show_progress, bool jumper_test) {
      */
 
     BPMSG1174;
-    perform_adc_test(BP_ADC_PROBE, V33L, V33H);
+    //perform_adc_test(BP_ADC_PROBE, V33L, V33H);
   }
 
 #endif /* BUSPIRATEV4 || BUSPIRATEV3 */

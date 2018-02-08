@@ -201,7 +201,7 @@ void binBB(void) {
         T4CON = 0;
         OC5CON = 0; // clear PWM settings
 
-        BP_AUX_RPOUT = OC5_IO; // setup pin
+        BP_AUX0_RPOUT = OC5_IO; // setup pin
 
         // get one byte
         i = getRXbyte();
@@ -227,19 +227,19 @@ void binBB(void) {
       } else if (inByte == 0b10011) { // clear PWM
         T2CON = 0;                    // stop Timer2
         OC5CON = 0;
-        BP_AUX_RPOUT = 0; // remove output from AUX pin
+        BP_AUX0_RPOUT = 0; // remove output from AUX pin
         user_serial_transmit_character(1);
         // ADC only for v1, v2, v3
       } else if (inByte == 0b10100) {  // ADC reading (x/1024)*6.6volts
         AD1CON1bits.ADON = 1;          // turn ADC ON
-        i = bp_read_adc(BP_ADC_PROBE); // take measurement
+        i = 0;//bp_read_adc(BP_ADC_PROBE); // take measurement
         AD1CON1bits.ADON = 0;          // turn ADC OFF
         user_serial_transmit_character((i >> 8));             // send upper 8 bits
         user_serial_transmit_character(i);                    // send lower 8 bits
       } else if (inByte == 0b10101) {  // ADC reading (x/1024)*6.6volts
         AD1CON1bits.ADON = 1;          // turn ADC ON
         while (1) {
-          i = bp_read_adc(BP_ADC_PROBE); // take measurement
+          i = 0;//bp_read_adc(BP_ADC_PROBE); // take measurement
           user_serial_wait_transmission_done();
           user_serial_transmit_character((i >> 8)); // send upper 8 bits
           // while(UART1TXRdy==0);
@@ -298,6 +298,9 @@ unsigned char binBBpindirectionset(unsigned char inByte) {
   // but it makes it work for all hardware versions
   // without special adjustments
   i = 0;
+  //if (inByte & 0b10000000)
+   // i = 1;
+ // BP_AUX1_DIR = i;
   if (inByte & 0b10000)
     i = 1;
   BP_AUX0_DIR = i;
@@ -326,7 +329,9 @@ unsigned char binBBpindirectionset(unsigned char inByte) {
   bp_delay_us(5);
 
   // return PORT read
-  inByte &= (~0b00011111);
+  inByte &= (~0b0011111);
+  //if (BP_AUX1 != 0)
+    //inByte |= 0b10000000;
   if (BP_AUX0 != 0)
     inByte |= 0b10000;
   if (BP_MOSI != 0)
@@ -360,6 +365,12 @@ unsigned char binBBpinset(unsigned char inByte) {
   // using this method is long and nasty,
   // but it makes it work for all hardware versions
   // without special adjustments
+#if 0 
+  i = 0;
+  if (inByte & 0b10000000)
+    i = 1;
+  BP_AUX1 = i;
+#endif
   i = 0;
   if (inByte & 0b10000)
     i = 1;
@@ -389,7 +400,11 @@ unsigned char binBBpinset(unsigned char inByte) {
   bp_delay_us(5);
 
   // return PORT read
-  inByte &= (~0b00011111);
+  inByte &= (~0b0011111);
+#if 0
+  if (BP_AUX1 != 0)
+    inByte |= 0b10000000;
+#endif
   if (BP_AUX0 != 0)
     inByte |= 0b10000;
   if (BP_MOSI != 0)
@@ -457,6 +472,17 @@ void bp_binary_io_peripherals_set(unsigned char inByte) {
     BP_AUX0_DIR = 0; // aux output
     BP_AUX0 = 0;     // aux low
   }
+
+#if 0
+    // AUX pin, high/low only
+  if (inByte & 0b10000) {
+    BP_AUX1_DIR = 0; // aux output
+    BP_AUX1 = 1;     // aux high
+  } else {
+    BP_AUX1_DIR = 0; // aux output
+    BP_AUX1 = 0;     // aux low
+  }
+#endif
 
   // CS pin, follows HiZ setting
   if (inByte & 0b1) {

@@ -140,6 +140,7 @@ void bp_reset_board_state(void) {
   BP_MISO_DIR = INPUT;
   BP_CS_DIR = INPUT;
   BP_AUX0_DIR = INPUT;
+  BP_AUX1_DIR = INPUT;
   BP_LEDMODE = OFF;
   BP_LEDMODE_DIR = OUTPUT;
 #ifdef BUSPIRATEV4
@@ -151,7 +152,8 @@ void bp_reset_board_state(void) {
 #endif /* BUSPIRATEv4 */
 
   /* Detach source from the currently-set AUX pin. */
-  BP_AUX_RPOUT = OFF;
+  BP_AUX0_RPOUT = OFF;
+  BP_AUX1_RPOUT = OFF;
 
   bus_pirate_configuration.bus_mode = BP_HIZ;
   clear_mode_configuration();
@@ -220,7 +222,7 @@ uint16_t bp_read_adc(const uint16_t channel) {
   /* Return value. */
   return ADC1BUF0;
 }
-
+#if 0 // Remove ADC probe related code
 void bp_adc_probe(void) {
   /* Turn the ADC on. */
   AD1CON1bits.ADON = ON;
@@ -231,7 +233,6 @@ void bp_adc_probe(void) {
   /* Turn the ADC off. */
   AD1CON1bits.ADON = OFF;
 }
-
 void bp_adc_continuous_probe(void) {
   unsigned int measurement;
 
@@ -264,7 +265,7 @@ void bp_adc_continuous_probe(void) {
   user_serial_read_byte();
   bpBR;
 }
-
+#endif
 void bp_write_formatted_integer(const uint16_t value) {
   uint16_t integer;
 
@@ -548,22 +549,6 @@ void user_serial_initialise(void) {
   }
 
   /*
-   * U1STA - UART1 STATUS AND CONTROL REGISTER
-   *
-   * MSB
-   * 000-01xx 000xxx0x
-   * ||| ||  |||   |
-   * ||| ||  |||   +-- OERR:    Overflow flag cleared.
-   * ||| ||  ||+------ ADDEN:   Address detect mode disabled.
-   * ||| ||  ++------- URXISEL: Interrupt on any incoming character.
-   * ||| |+----------- UTXEN:   Enable transmission.
-   * ||| +------------ UTXBRK:  Sync break transmission disabled.
-   * +|+-------------- UTXISEL: Interrupt on each outgoing character.
-   *  +--------------- UTXINV:  Idle state high (IrDA is disabled).
-   */
-  U1STA = 0x0400;
-
-  /*
    * U1MODE - UART1 MODE REGISTER
    *
    * MSB
@@ -583,6 +568,22 @@ void user_serial_initialise(void) {
    * +----------------- UARTEN: UART1 enabled.
    */
   U1MODE = 0x8008;
+  
+  /*
+   * U1STA - UART1 STATUS AND CONTROL REGISTER
+   *
+   * MSB
+   * 000-01xx 000xxx0x
+   * ||| ||  |||   |
+   * ||| ||  |||   +-- OERR:    Overflow flag cleared.
+   * ||| ||  ||+------ ADDEN:   Address detect mode disabled.
+   * ||| ||  ++------- URXISEL: Interrupt on any incoming character.
+   * ||| |+----------- UTXEN:   Enable transmission.
+   * ||| +------------ UTXBRK:  Sync break transmission disabled.
+   * +|+-------------- UTXISEL: Interrupt on each outgoing character.
+   *  +--------------- UTXINV:  Idle state high (IrDA is disabled).
+   */
+  U1STA = 0x0400;
 
   IFS0bits.U1RXIF = NO;
 }

@@ -27,8 +27,8 @@
 #include "proc_menu.h"
 
 #define AUXPIN_DIR BP_AUX0_DIR
-#define AUXPIN_RPIN BP_AUX_RPIN
-#define AUXPIN_RPOUT BP_AUX_RPOUT
+#define AUXPIN_RPIN BP_AUX0_RPIN
+#define AUXPIN_RPOUT BP_AUX0_RPOUT
 
 extern mode_configuration_t mode_configuration;
 extern bool command_error;
@@ -868,13 +868,17 @@ uint32_t average_sample_frequency(const uint16_t count) {
 }
 
 void bp_aux_pin_set_high_impedance(void) {
-#ifdef BUSPIRATEV3
+//#ifdef BUSPIRATEV3
+#if 0
   if (mode_configuration.alternate_aux == 0) {
     BP_AUX0_DIR = INPUT;
+  } else if (mode_configuration.alternate_aux == 2) {
+    BP_AUX1_DIR = INPUT;
   } else {
     BP_CS_DIR = INPUT;
   }
-#else
+#endif
+//#else
   switch (mode_configuration.alternate_aux) {
   case 0:
     BP_AUX0_DIR = INPUT;
@@ -888,28 +892,33 @@ void bp_aux_pin_set_high_impedance(void) {
     BP_AUX1_DIR = INPUT;
     break;
 
-  case 3:
-    BP_AUX2_DIR = INPUT;
-    break;
+  //case 3:
+  // BP_AUX2_DIR = INPUT;
+  //  break;
 
   default:
     break;
   }
-#endif /* BUSPIRATEV3 */
+//#endif /* BUSPIRATEV3 */
 
   BPMSG1039;
 }
 
 void bp_aux_pin_set_high(void) {
-#ifdef BUSPIRATEV3
+#if 0
+//#ifdef BUSPIRATEV3
   if (mode_configuration.alternate_aux == 0) {
     BP_AUX0_DIR = OUTPUT;
     BP_AUX0 = HIGH;
+  } else if (mode_configuration.alternate_aux == 2) {
+    BP_AUX1_DIR = OUTPUT;
+    BP_AUX1 = HIGH;
   } else {
     BP_CS_DIR = OUTPUT;
     BP_CS = HIGH;
   }
-#else
+//#else
+#endif
   switch (mode_configuration.alternate_aux) {
   case 0:
     BP_AUX0_DIR = OUTPUT;
@@ -925,30 +934,35 @@ void bp_aux_pin_set_high(void) {
     BP_AUX1_DIR = OUTPUT;
     BP_AUX1 = HIGH;
     break;
-
+/*
   case 3:
     BP_AUX2_DIR = OUTPUT;
     BP_AUX2 = HIGH;
     break;
-
+*/
   default:
     break;
   }
-#endif /* BUSPIRATEV3 */
+//#endif /* BUSPIRATEV3 */
 
   BPMSG1040;
 }
 
 void bp_aux_pin_set_low(void) {
-#ifdef BUSPIRATEV3
+//#ifdef BUSPIRATEV3
+#if 0
   if (mode_configuration.alternate_aux == 0) {
     BP_AUX0_DIR = OUTPUT;
     BP_AUX0 = LOW;
+  } else if (mode_configuration.alternate_aux == 2) {
+    BP_AUX1_DIR = OUTPUT;
+    BP_AUX1 = LOW;
   } else {
     BP_CS_DIR = OUTPUT;
     BP_CS = LOW;
   }
-#else
+#endif
+//#else
   switch (mode_configuration.alternate_aux) {
   case 0:
     BP_AUX0_DIR = OUTPUT;
@@ -964,34 +978,42 @@ void bp_aux_pin_set_low(void) {
     BP_AUX1_DIR = OUTPUT;
     BP_AUX1 = LOW;
     break;
-
+/*
   case 3:
     BP_AUX2_DIR = OUTPUT;
     BP_AUX2 = LOW;
     break;
-
+*/
   default:
     break;
   }
-#endif /* BUSPIRATEV3 */
+//#endif /* BUSPIRATEV3 */
 
   BPMSG1041;
 }
 
 bool bp_aux_pin_read(void) {
-#ifdef BUSPIRATEV3
+#if 0
+//#ifdef BUSPIRATEV3
   if (mode_configuration.alternate_aux == 0) {
     BP_AUX0_DIR = INPUT;
     Nop();
     Nop();
     return BP_AUX0;
   }
+  if (mode_configuration.alternate_aux == 2) {
+    BP_AUX1_DIR = INPUT;
+    Nop();
+    Nop();
+    return BP_AUX1;
+  }
 
   BP_CS_DIR = INPUT;
   Nop();
   Nop();
   return BP_CS;
-#else
+//#else
+#endif
   switch (MASKBOTTOM8(mode_configuration.alternate_aux, 2)) {
   case 0:
     BP_AUX0_DIR = INPUT;
@@ -1010,18 +1032,18 @@ bool bp_aux_pin_read(void) {
     Nop();
     Nop();
     return BP_AUX1;
-
+/*
   case 3:
     BP_AUX2_DIR = INPUT;
     Nop();
     Nop();
     return BP_AUX2;
-
+*/
   default:
     /* Should not happen. */
     return LOW;
   }
-#endif /* BUSPIRATEV3 */
+//#endif /* BUSPIRATEV3 */
 }
 
 void bp_servo_setup(void) {
